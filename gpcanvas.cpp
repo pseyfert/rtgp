@@ -7,6 +7,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <Rtypes.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
+
 /**
  * Implementation file for class : gpcanvas
  * 
@@ -25,12 +28,16 @@ bool gpcanvas::save() {
     std::cout << gettext("There is nothing to do.") << std::endl;
     return retval;
   }
+  struct winsize w;
+  ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+  unsigned int num_of_rows = w.ws_row;
+  unsigned int num_of_cols = w.ws_col;
   printf(gettext("Creating the macro %s.gp\n"),macroname.c_str());
   std::ofstream macro(Form("%s.gp",macroname.c_str()));
   // do some magic
 	// 
 //  macro << "set terminal epslatex color" << std::endl;
-  macro << "set terminal dumb" << std::endl;
+  macro << "set terminal dumb size " << num_of_cols << "," << num_of_rows << std::endl;
 //  macro << "set output \"" << macroname.c_str() << ".tex\"" << std::endl;
   macro << "set xlabel \"" << (*histogramms.begin())->xtitle() << "\"" << std::endl;
   macro << "set ylabel \"" << (*histogramms.begin())->ytitle() << "\"" << std::endl;
