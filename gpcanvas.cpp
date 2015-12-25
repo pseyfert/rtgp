@@ -18,7 +18,7 @@
  */
 #include <TStyle.h>
 
-#include <gnuplot-iostream.h>
+#include "gnuplot-iostream/gnuplot-iostream.h"
 
 /**
  * Write a macro file from TCanvas

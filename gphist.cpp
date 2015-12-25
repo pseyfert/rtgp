@@ -9,7 +9,7 @@
 #include <Rtypes.h>
 #include <tuple>
 #include <vector>
-#include <gnuplot-iostream.h>
+#include "gnuplot-iostream/gnuplot-iostream.h"
 /**
  * Implementation file for class : gpcanvas
  * 
