@@ -18,11 +18,14 @@
  */
 #include <TStyle.h>
 
+#include <gnuplot-iostream.h>
+
 /**
  * Write a macro file from TCanvas
  * and store the contained histogramms
  */
 bool gpcanvas::save() {
+  Gnuplot gp;
   bool retval = true;
   if (histogramms.empty()) {
     std::cout << gettext("There is nothing to do.") << std::endl;
@@ -37,21 +40,21 @@ bool gpcanvas::save() {
   // do some magic
 	// 
 //  macro << "set terminal epslatex color" << std::endl;
-  macro << "set terminal dumb size " << num_of_cols << "," << num_of_rows << std::endl;
+  gp << "set terminal dumb size " << num_of_cols << "," << num_of_rows << std::endl;
 //  macro << "set output \"" << macroname.c_str() << ".tex\"" << std::endl;
-  macro << "set xlabel \"" << (*histogramms.begin())->xtitle() << "\"" << std::endl;
-  macro << "set ylabel \"" << (*histogramms.begin())->ytitle() << "\"" << std::endl;
-  macro << "set boxwidth 0.9 absolute" << std::endl;
-  macro << "set style fill solid 1.00 border -1\n";
-  macro << "set style histogram errorbars gap 1" << std::endl;
-  macro << "set datafile missing '-'" << std::endl;
-  macro << "set style data histograms" << std::endl;
+  gp << "set xlabel \"" << (*histogramms.begin())->xtitle() << "\"" << std::endl;
+  gp << "set ylabel \"" << (*histogramms.begin())->ytitle() << "\"" << std::endl;
+  gp << "set boxwidth 0.9 absolute" << std::endl;
+  gp << "set style fill solid 1.00 border -1\n";
+  gp << "set style histogram errorbars gap 1" << std::endl;
+  gp << "set datafile missing '-'" << std::endl;
+  gp << "set style data histograms" << std::endl;
   double up,low;
   (*histogramms.begin())->getyrange(low,up);
   if (low!=up)
-    macro << "set yrange [" << low << ":" << up << "]\n";
-  macro << "unset key" << std::endl;
-  macro << "set datafile commentschar \"#\"" << std::endl;
+    gp << "set yrange [" << low << ":" << up << "]\n";
+  gp << "unset key" << std::endl;
+  gp << "set datafile commentschar \"#\"" << std::endl;
 
   low = (*histogramms.begin())->thehist->GetBinLowEdge((*histogramms.begin())->thehist->GetXaxis()->GetFirst());
   up = (*histogramms.begin())->thehist->GetXaxis()->GetBinUpEdge((*histogramms.begin())->thehist->GetXaxis()->GetLast());
@@ -63,7 +66,7 @@ bool gpcanvas::save() {
        histogramms.end() != it;
        ++it) {
     macro << "'" << (*it)->filename() << "' using 2:3:xtic(1) title \"" << (*it)->title() << "\"";
-    retval = retval && ((*it)->save());
+    retval = retval && ((*it)->save(gp));
     if (--histogramms.end()!=it)
       macro << ",\\\n";
   }
@@ -74,7 +77,7 @@ bool gpcanvas::save() {
 
   char buf[256];
 	sprintf(buf, "gnuplot %s.gp",macroname.c_str());
-	system(buf);
+	//system(buf);
 	printf("%s\n",buf);
 
   return retval;

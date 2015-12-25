@@ -1,3 +1,5 @@
+#ifndef GPCAN
+#define GPCAN
 #include <string>
 #include <vector>
 #include <TCanvas.h>
@@ -36,3 +38,4 @@ class gpcanvas {
  ClassDef(gpcanvas,1);
 };
 
+#endif

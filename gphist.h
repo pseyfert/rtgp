@@ -4,6 +4,7 @@
 #include <string>
 #include <Rtypes.h>
 #include <TH1.h>
+#include <gnuplot-iostream.h>
 
 
 /** @class gphist
@@ -20,7 +21,7 @@ class gphist {
   gphist() {};
   gphist(TH1* roothist);
   virtual ~gphist();
-  bool                 save();
+  bool                 save(Gnuplot& gp);
   std::string          filename() {return dataname;}
   bool                 getyrange(double& low, double& up);
   const char*          xtitle() {return thehist->GetXaxis()->GetTitle();}

@@ -7,6 +7,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <Rtypes.h>
+#include <tuple>
+#include <vector>
+#include <gnuplot-iostream.h>
 /**
  * Implementation file for class : gpcanvas
  * 
@@ -15,7 +18,7 @@
  */
 #include <TStyle.h>
 
-bool gphist::save() {
+bool gphist::save(Gnuplot& gp) {
   bool retval = true;
   if (saved) {
     std::cout << gettext("There is nothing to do.") << std::endl;
@@ -25,11 +28,15 @@ bool gphist::save() {
   std::ofstream data(dataname.c_str());
   // do some magic
   data << "# " << gettext("There are ") << thehist->GetXaxis()->GetNbins() << gettext(" data points to be written.") << std::endl;
+  std::vector<std::tuple<float,float,float> > thedata;
+  gp << "plot '-' using 2:3:xtic(1) title \"" << this->title() << "\"\n";
   //  for (int i = 1 ; i <= thehist->GetXaxis()->GetNbins() ; ++i) {
   for  (int i = thehist->GetXaxis()->GetFirst() ; i <= thehist->GetXaxis()->GetLast() ; ++i) {
 //    std::cout << "." << std::endl;
     data << thehist->GetBinCenter(i) << "\t" << thehist->GetBinContent(i) << "\t" << thehist->GetBinError(i) << std::endl;
+    thedata.push_back(std::make_tuple(thehist->GetBinCenter(i),thehist->GetBinContent(i),thehist->GetBinError(i)));
   }
+  gp.send1d(thedata);
 
   data.close();
 //  std::cout << gettext("data created") << std::endl;
@@ -61,7 +68,10 @@ bool gphist::getyrange(double& low, double& up) {
 
 gphist::~gphist() {
   std::cout << gettext("Deleting gphist ") << dataname << std::endl;
-  if (!saved) save();
+  if (!saved) {
+    Gnuplot gp;
+    save(gp);
+  }
 }
 
 gphist::gphist(TH1* roothist) : dataname(roothist->GetName()) {
