@@ -2,11 +2,14 @@
 *.slo
 *.lo
 *.o
+*.os
 *.obj
 
 # Precompiled Headers
 *.gch
 *.pch
+*.pcm
+*Dict*
 
 # Compiled Dynamic libraries
 *.so
