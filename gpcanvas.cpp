@@ -47,7 +47,7 @@ bool gpcanvas::save() {
   gp << "set boxwidth 0.9 absolute" << std::endl;
   gp << "set style fill solid 1.00 border -1\n";
   gp << "set style histogram errorbars gap 1" << std::endl;
-  gp << "set datafile missing '-'" << std::endl;
+  //gp << "set datafile missing '-'" << std::endl;
   gp << "set style data histograms" << std::endl;
   double up,low;
   (*histogramms.begin())->getyrange(low,up);
@@ -62,14 +62,17 @@ bool gpcanvas::save() {
 //  macro << "plot [" << low << ":" << up << "] ";  
   macro << "plot ";
 	
-  for (std::vector<gphist*>::iterator it = histogramms.begin();
-       histogramms.end() != it;
-       ++it) {
-    macro << "'" << (*it)->filename() << "' using 2:3:xtic(1) title \"" << (*it)->title() << "\"";
-    retval = retval && ((*it)->save(gp));
-    if (--histogramms.end()!=it)
-      macro << ",\\\n";
+  gp << "plot";
+  for (auto it : histogramms) {
+    gp << " '-' using 2:3:xtic(1) title \"" << it->title() << "\"";
+    if (histogramms.back()!=it) {
+      gp << ", ";
+    } else {
+      gp << "\n";
+    }
   }
+  for (auto it : histogramms)
+    it->save(gp);
 
   macro.close();
 

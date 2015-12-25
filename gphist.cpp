@@ -29,7 +29,6 @@ bool gphist::save(Gnuplot& gp) {
   // do some magic
   data << "# " << gettext("There are ") << thehist->GetXaxis()->GetNbins() << gettext(" data points to be written.") << std::endl;
   std::vector<std::tuple<float,float,float> > thedata;
-  gp << "plot '-' using 2:3:xtic(1) title \"" << this->title() << "\"\n";
   //  for (int i = 1 ; i <= thehist->GetXaxis()->GetNbins() ; ++i) {
   for  (int i = thehist->GetXaxis()->GetFirst() ; i <= thehist->GetXaxis()->GetLast() ; ++i) {
 //    std::cout << "." << std::endl;
