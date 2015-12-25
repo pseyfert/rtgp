@@ -54,7 +54,7 @@ bool gpcanvas::save() {
   if (low!=up)
     gp << "set yrange [" << low << ":" << up << "]\n";
   gp << "unset key" << std::endl;
-  gp << "set datafile commentschar \"#\"" << std::endl;
+  //gp << "set datafile commentschar \"#\"" << std::endl;
 
   low = (*histogramms.begin())->thehist->GetBinLowEdge((*histogramms.begin())->thehist->GetXaxis()->GetFirst());
   up = (*histogramms.begin())->thehist->GetXaxis()->GetBinUpEdge((*histogramms.begin())->thehist->GetXaxis()->GetLast());
