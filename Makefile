@@ -5,8 +5,8 @@ CXXso = c++
 TUNEFLAG = $(shell $(CXX) --version | \
 	   awk '// { for (i = 1; i <= NF; ++i) if ($$i ~ /[0-9]*\.[0-9]*\.[0-9]*$$/) {if ($$i < "4.2") print "-mtune=opteron"; else print "-mtune=native"; }; }')
 CXXFLAGS = -Wall -Wextra -O2 $(TUNEFLAG) $(shell $(ROOTCONFIG) --cflags)
-LDFLAGS =
-SOFLAGS = -fPIC -shared $(LDFLAGS)
+LDFLAGS = $(shell root-config --libs)
+SOFLAGS = -fPIC -shared
 
 # source and Dictionary files
 allDicts = rtgpDict.cpp
@@ -55,3 +55,6 @@ rtgpDict.cpp: $(filter-out rtgpDict.h,$(wildcard *.h))
 
 # include dependencies
 include $(patsubst %.cpp,%.d,$(allsrc))
+
+quickplot: quickplot.cc
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^ -L/usr/lib/x86_64-linux-gnu -lboost_iostreams -lboost_system -lboost_filesystem -L. -lrtgp
