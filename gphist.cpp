@@ -1,7 +1,6 @@
 #include "gpcanvas.h"
 #include "gphist.h"
 #include <iostream>
-#include <fstream>
 //#include <libintl.h>
 #include <TROOT.h>
 #include <stdio.h>
@@ -24,21 +23,23 @@ bool gphist::save(Gnuplot& gp) {
     std::cout << gettext("There is nothing to do.") << std::endl;
     return retval;
   }
-  std::cout << gettext("Creating the data ") << dataname << "" << std::endl;
-  std::ofstream data(dataname.c_str());
   // do some magic
-  data << "# " << gettext("There are ") << thehist->GetXaxis()->GetNbins() << gettext(" data points to be written.") << std::endl;
-  std::vector<std::tuple<float,float,float> > thedata;
-  //  for (int i = 1 ; i <= thehist->GetXaxis()->GetNbins() ; ++i) {
-  for  (int i = thehist->GetXaxis()->GetFirst() ; i <= thehist->GetXaxis()->GetLast() ; ++i) {
-//    std::cout << "." << std::endl;
-    data << thehist->GetBinCenter(i) << "\t" << thehist->GetBinContent(i) << "\t" << thehist->GetBinError(i) << std::endl;
-    thedata.push_back(std::make_tuple(thehist->GetBinCenter(i),thehist->GetBinContent(i),thehist->GetBinError(i)));
-  }
-  gp.send1d(thedata);
+  //data << "# " << gettext("There are ") << thehist->GetXaxis()->GetNbins() << gettext(" data points to be written.") << std::endl;
 
-  data.close();
-//  std::cout << gettext("data created") << std::endl;
+  if (!parent->with_errorbars) {
+    std::vector<std::tuple<float,float> > thedata;
+    for  (int i = thehist->GetXaxis()->GetFirst() ; i <= thehist->GetXaxis()->GetLast() ; ++i) {
+      thedata.push_back(std::make_tuple(thehist->GetBinCenter(i),thehist->GetBinContent(i)));
+    }
+    gp.send1d(thedata);
+  } else {
+    std::vector<std::tuple<float,float,float> > thedata;
+    for  (int i = thehist->GetXaxis()->GetFirst() ; i <= thehist->GetXaxis()->GetLast() ; ++i) {
+      thedata.push_back(std::make_tuple(thehist->GetBinCenter(i),thehist->GetBinContent(i),thehist->GetBinError(i)));
+    }
+    gp.send1d(thedata);
+  }
+
   saved = true;
   return retval;  
 }

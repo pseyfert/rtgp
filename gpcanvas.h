@@ -24,13 +24,13 @@
 
 class gpcanvas {
  public:
-  gpcanvas() {saved = false;}
+  bool   with_errorbars;
+  gpcanvas() : with_errorbars(false) {saved = false;}
   gpcanvas(TCanvas* rootcanvas);
   virtual ~gpcanvas();
   bool                 save();
  private:
   std::vector<gphist*>  histogramms;
-  std::string          macroname;
   bool                 saved;
 #ifndef _LIBINTL_H
 	char* gettext(char* s) {return s;}

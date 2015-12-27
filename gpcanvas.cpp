@@ -35,36 +35,33 @@ bool gpcanvas::save() {
   ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
   unsigned int num_of_rows = w.ws_row;
   unsigned int num_of_cols = w.ws_col;
-  printf(gettext("Creating the macro %s.gp\n"),macroname.c_str());
-  std::ofstream macro(Form("%s.gp",macroname.c_str()));
   // do some magic
 	// 
 //  macro << "set terminal epslatex color" << std::endl;
   gp << "set terminal dumb size " << num_of_cols << "," << num_of_rows << std::endl;
-//  macro << "set output \"" << macroname.c_str() << ".tex\"" << std::endl;
   gp << "set xlabel \"" << (*histogramms.begin())->xtitle() << "\"" << std::endl;
   gp << "set ylabel \"" << (*histogramms.begin())->ytitle() << "\"" << std::endl;
   gp << "set boxwidth 0.9 absolute" << std::endl;
   gp << "set style fill solid 1.00 border -1\n";
-  gp << "set style histogram errorbars gap 1" << std::endl;
-  //gp << "set datafile missing '-'" << std::endl;
+  if ((*histogramms.begin())->thehist->GetSumw2N()!=0) with_errorbars = true;
+  if (with_errorbars) gp << "set style histogram errorbars gap 1" << std::endl;
   gp << "set style data histograms" << std::endl;
   double up,low;
   (*histogramms.begin())->getyrange(low,up);
   if (low!=up)
     gp << "set yrange [" << low << ":" << up << "]\n";
   gp << "unset key" << std::endl;
-  //gp << "set datafile commentschar \"#\"" << std::endl;
 
   low = (*histogramms.begin())->thehist->GetBinLowEdge((*histogramms.begin())->thehist->GetXaxis()->GetFirst());
   up = (*histogramms.begin())->thehist->GetXaxis()->GetBinUpEdge((*histogramms.begin())->thehist->GetXaxis()->GetLast());
 
-//  macro << "plot [" << low << ":" << up << "] ";  
-  macro << "plot ";
-	
   gp << "plot";
   for (auto it : histogramms) {
-    gp << " '-' using 2:3:xtic(1) title \"" << it->title() << "\"";
+    if (!with_errorbars) {
+      gp << " '-' using 2:xtic(1) title \"" << it->title() << "\"";
+    } else {
+      gp << " '-' using 2:3:xtic(1) title \"" << it->title() << "\"";
+    }
     if (histogramms.back()!=it) {
       gp << ", ";
     } else {
@@ -74,19 +71,15 @@ bool gpcanvas::save() {
   for (auto it : histogramms)
     it->save(gp);
 
-  macro.close();
-
   saved = true;
 
   char buf[256];
-	sprintf(buf, "gnuplot %s.gp",macroname.c_str());
-	//system(buf);
 	printf("%s\n",buf);
 
   return retval;
 }
 
-gpcanvas::gpcanvas(TCanvas* rootcanvas) : macroname(rootcanvas->GetName()) {
+gpcanvas::gpcanvas(TCanvas* rootcanvas) {
   rootcanvas->Update();
   TList* list = rootcanvas->GetListOfPrimitives();
   TObjLink* lnk = list->FirstLink();
@@ -97,6 +90,7 @@ gpcanvas::gpcanvas(TCanvas* rootcanvas) : macroname(rootcanvas->GetName()) {
 //    std::cout << element->GetName() << std::endl;
     if (element->InheritsFrom("TH1")) {
       gphist* gpelement = new gphist((TH1*)element);
+      gpelement->parent = this;
       histogramms.push_back(gpelement);
     }
 //    std::cout << lnk << "\t" << lnk->Next() << "\n";
@@ -107,8 +101,6 @@ gpcanvas::gpcanvas(TCanvas* rootcanvas) : macroname(rootcanvas->GetName()) {
 }
 
 gpcanvas::~gpcanvas() {
-  std::cout << gettext("Deleting gpcanvas ") << macroname << std::endl;
-//  std::cout << "saving it" << std::endl;
   if (!saved) save();
 
   for (std::vector<gphist*>::iterator it = histogramms.begin();

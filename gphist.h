@@ -5,6 +5,7 @@
 #include <Rtypes.h>
 #include <TH1.h>
 namespace gnuplotio {class Gnuplot;}
+class gpcanvas;
 
 
 /** @class gphist
@@ -29,6 +30,7 @@ class gphist {
   const char*          title()  {return thehist->GetTitle();}
   friend class gpcanvas;
  private:
+  gpcanvas* parent;
   TH1*                 thehist;
   std::string          dataname;
   bool                 saved;
