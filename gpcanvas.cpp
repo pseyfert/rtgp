@@ -45,7 +45,9 @@ bool gpcanvas::save() {
   gp << "set ylabel \"" << (*histogramms.begin())->ytitle() << "\"" << std::endl;
   gp << "set boxwidth 0.9 absolute" << std::endl;
   gp << "set style fill solid 1.00 border -1\n";
-  if ((*histogramms.begin())->thehist->GetSumw2N()!=0) with_errorbars = true;
+  for (auto it : histogramms) {
+    with_errorbars |= it->errorbars;
+  }
   if (with_errorbars) gp << "set style histogram errorbars gap 1" << std::endl;
   gp << "set style data histograms" << std::endl;
   double up,low;
@@ -90,11 +92,11 @@ gpcanvas::gpcanvas(TCanvas* rootcanvas) {
   while (lnk) {
     element=lnk->GetObject();
     Option_t* option = lnk->GetOption();
-    THistPainter* painter = new THistPainter();
-    Hoption_t* hoption = painter->parseresult(option);
 //    std::cout << element->GetName() << std::endl;
     if (element->InheritsFrom("TH1")) {
       gphist* gpelement = new gphist((TH1*)element);
+      THistPainter* painter = static_cast<THistPainter*>(static_cast<TH1*>(element)->GetPainter());
+      Hoption_t* hoption = painter->parseresult(option);
       gpelement->parent = this;
       gpelement->errorbars = hoption->Error;
       histogramms.push_back(gpelement);
