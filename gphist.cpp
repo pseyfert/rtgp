@@ -35,7 +35,11 @@ bool gphist::save(Gnuplot& gp) {
   } else {
     std::vector<std::tuple<float,float,float> > thedata;
     for  (int i = thehist->GetXaxis()->GetFirst() ; i <= thehist->GetXaxis()->GetLast() ; ++i) {
-      thedata.push_back(std::make_tuple(thehist->GetBinCenter(i),thehist->GetBinContent(i),thehist->GetBinError(i)));
+      if (errorbars) {
+        thedata.push_back(std::make_tuple(thehist->GetBinCenter(i),thehist->GetBinContent(i),thehist->GetBinError(i)));
+      } else {
+        thedata.push_back(std::make_tuple(thehist->GetBinCenter(i),thehist->GetBinContent(i),0.f));
+      }
     }
     gp.send1d(thedata);
   }
@@ -67,15 +71,13 @@ bool gphist::getyrange(double& low, double& up) {
 }
 
 gphist::~gphist() {
-  std::cout << gettext("Deleting gphist ") << dataname << std::endl;
   if (!saved) {
     Gnuplot gp;
     save(gp);
   }
 }
 
-gphist::gphist(TH1* roothist) : dataname(roothist->GetName()) {
-  std::cout << gettext("opened histogram ") << dataname << std::endl;
+gphist::gphist(TH1* roothist) : errorbars(false) {
   if (roothist->InheritsFrom("TH2") || roothist->InheritsFrom("TH3") || roothist->InheritsFrom("TProfile"))
     std::cout << gettext("These classes have not been completely implemented yet. Expect unexpected results.") << std::endl;
   thehist = roothist;

@@ -3,6 +3,8 @@
 #include <iostream>
 #include <fstream>
 //#include <libintl.h>
+#include "THistPainter.h"
+#include "Hoption.h"
 #include <TROOT.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -88,10 +90,13 @@ gpcanvas::gpcanvas(TCanvas* rootcanvas) {
   while (lnk) {
     element=lnk->GetObject();
     Option_t* option = lnk->GetOption();
+    THistPainter* painter = new THistPainter();
+    Hoption_t* hoption = painter->parseresult(option);
 //    std::cout << element->GetName() << std::endl;
     if (element->InheritsFrom("TH1")) {
       gphist* gpelement = new gphist((TH1*)element);
       gpelement->parent = this;
+      gpelement->errorbars = hoption->Error;
       histogramms.push_back(gpelement);
     }
 //    std::cout << lnk << "\t" << lnk->Next() << "\n";

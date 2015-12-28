@@ -32,6 +32,7 @@ class gphist {
   gpcanvas* parent;
   TH1*                 thehist;
   bool                 saved;
+  bool                 errorbars;
 #ifndef _LIBINTL_H
   char* gettext(char* s) {return s;}
 #endif
