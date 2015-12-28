@@ -23,7 +23,6 @@ class gphist {
   gphist(TH1* roothist);
   virtual ~gphist();
   bool                 save(gnuplotio::Gnuplot& gp);
-  std::string          filename() {return dataname;}
   bool                 getyrange(double& low, double& up);
   const char*          xtitle() {return thehist->GetXaxis()->GetTitle();}
   const char*          ytitle() {return thehist->GetYaxis()->GetTitle();}
@@ -32,7 +31,6 @@ class gphist {
  private:
   gpcanvas* parent;
   TH1*                 thehist;
-  std::string          dataname;
   bool                 saved;
 #ifndef _LIBINTL_H
   char* gettext(char* s) {return s;}
