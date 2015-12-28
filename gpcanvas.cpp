@@ -87,6 +87,7 @@ gpcanvas::gpcanvas(TCanvas* rootcanvas) {
 //  std::cout << "===============================\n";
   while (lnk) {
     element=lnk->GetObject();
+    Option_t* option = lnk->GetOption();
 //    std::cout << element->GetName() << std::endl;
     if (element->InheritsFrom("TH1")) {
       gphist* gpelement = new gphist((TH1*)element);
