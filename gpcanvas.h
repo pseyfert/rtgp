@@ -24,8 +24,7 @@
 
 class gpcanvas {
  public:
-  bool   with_errorbars;
-  gpcanvas() : with_errorbars(false) {saved = false;}
+  gpcanvas() : saved(false) {}
   gpcanvas(TCanvas* rootcanvas);
   virtual ~gpcanvas();
   bool                 save();

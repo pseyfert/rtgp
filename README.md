@@ -1,12 +1,11 @@
-# History
+# RTGP - ROOT to GNUPLOT
+
+RTGP is a simple implementation, forwarding ROOT histogram information to
+gnuplot, to plot it to the command line.
 
 ## original
 The original rtgp is still
 [here](https://mathphys.fsk.uni-heidelberg.de/~pseyfert/cc.html)
-
-See the video
-[here](http://virgilio.mib.infn.it/~seyfert/dumb-root-terminal.html)
-demonstrating what it does.
 
 ## more recent
 
@@ -30,3 +29,10 @@ gSystem->Load("path/to/libboost_iostreams.so");
 gSystem->Load("path/to/librtgp.so")
 ```
 
+See the video
+[here](http://virgilio.mib.infn.it/~seyfert/dumb-root-terminal.html)
+demonstrating how rtgp looks in action.
+
+## THANKS
+
+[Matthew](http://stackoverflow.com/questions/34482441/plotting-two-histograms-one-w-and-one-w-o-error-bars-in-one-plot)

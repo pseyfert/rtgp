@@ -25,8 +25,9 @@ bool gphist::save(Gnuplot& gp) {
   }
   // do some magic
   //data << "# " << gettext("There are ") << thehist->GetXaxis()->GetNbins() << gettext(" data points to be written.") << std::endl;
+  std::cout << "plotting  with errorbars: " << errorbars << std::endl;
 
-  if (!parent->with_errorbars) {
+  if (!errorbars) {
     std::vector<std::tuple<float,float> > thedata;
     for  (int i = thehist->GetXaxis()->GetFirst() ; i <= thehist->GetXaxis()->GetLast() ; ++i) {
       thedata.push_back(std::make_tuple(thehist->GetBinCenter(i),thehist->GetBinContent(i)));

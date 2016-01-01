@@ -13,14 +13,14 @@ allDicts = rtgpDict.cpp
 allsrc = $(wildcard *.cpp) $(allDicts)
 
 # general targets
-all: dep librtgp.a librtgp.so
+all: dep librtgp.a librtgp.so quickplot
 
 dep: Dicts $(patsubst %.cpp,%.d,$(allsrc) $(allDicts))
 
 Dicts: $(allDicts)
 
 clean: cleanDicts cleandeps
-	rm -f *.o *.os *~ lib*
+	rm -f *.o *.os *~ lib* quickplot
 
 cleanDicts:
 	rm -f *Dict*
