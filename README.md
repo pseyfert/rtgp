@@ -3,6 +3,9 @@
 RTGP is a simple implementation, forwarding ROOT histogram information to
 gnuplot, to plot it to the command line.
 
+![demo](http://virgilio.mib.infn.it/~seyfert/images/root2gnuplot.webm.gif)
+![demo](http://virgilio.mib.infn.it/~seyfert/images/root2gnuplot_cmd.webm.gif)
+
 ## original
 The original rtgp is still
 [here](https://mathphys.fsk.uni-heidelberg.de/~pseyfert/cc.html)
