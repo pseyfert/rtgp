@@ -33,6 +33,7 @@ bool gpcanvas::save() {
     std::cout << gettext("There is nothing to do.") << std::endl;
     return retval;
   }
+  //http://stackoverflow.com/questions/23369503/get-size-of-terminal-window-rows-columns
   struct winsize w;
   ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
   unsigned int num_of_rows = w.ws_row;
